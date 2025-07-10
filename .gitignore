@@ -1,6 +1,6 @@
 .idea
 .git
-venv
-mysql
 .env
-docker-compose.yml
+
+
+venv
