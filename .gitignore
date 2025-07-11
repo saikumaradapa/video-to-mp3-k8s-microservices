@@ -1,7 +1,28 @@
-.idea
-.git
+# Python cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+
+# Environment variables
 .env
 
+# Editor/IDE settings
+.idea/
+.vscode/
 
-venv
-.venv
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Docker-specific
+*.log
+*.db
+docker-compose.override.yml
+
+# Git-related
+.git/
