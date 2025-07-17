@@ -1,77 +1,85 @@
-import jwt, datetime, os
-from flask import Flask, request
+import os
+import jwt
+import datetime
+from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 from dotenv import load_dotenv
 
-server = Flask(__name__)
-mysql = MySQL(server)
-load_dotenv(".env")
+# Load environment variables
+load_dotenv()
 
-# config
-server.config["MYSQL_HOST"] = os.getenv("MYSQL_HOST")
-server.config["MYSQL_USER"] = os.getenv("MYSQL_USER")
-server.config["MYSQL_PASSWORD"] = os.getenv("MYSQL_PASSWORD")
-server.config["MYSQL_DB"] = os.getenv("MYSQL_DB")
-server.config["MYSQL_PORT"] = int(os.getenv("MYSQL_PORT"))
+server = Flask(__name__)
+
+# MySQL Configuration
+server.config["MYSQL_HOST"] = os.getenv("MYSQL_HOST", "localhost")
+server.config["MYSQL_USER"] = os.getenv("MYSQL_USER", "auth_user")
+server.config["MYSQL_PASSWORD"] = os.getenv("MYSQL_PASSWORD", "auth123")
+server.config["MYSQL_DB"] = os.getenv("MYSQL_DB", "auth")
+server.config["MYSQL_PORT"] = int(os.getenv("MYSQL_PORT", 3306))
+
+mysql = MySQL(server)
+
+# JWT Secret
+JWT_SECRET = os.getenv("JWT_SECRET", "your_jwt_secret")
 
 
 @server.route("/login", methods=["POST"])
 def login():
     auth = request.authorization
-    if not auth:
-        return "missing credentials", 401
+    if not auth or not auth.username or not auth.password:
+        return jsonify({"error": "Missing credentials"}), 401
 
-    # check db for username and password
-    cur = mysql.connection.cursor()
-    res = cur.execute(
-        "SELECT email, password FROM user WHERE email=%s", (auth.username,)
-    )
+    try:
+        cur = mysql.connection.cursor()
+        res = cur.execute(
+            "SELECT email, password FROM user WHERE email = %s", (auth.username,)
+        )
 
-    if res > 0:
-        user_row = cur.fetchone()
-        email = user_row[0]
-        password = user_row[1]
+        if res == 0:
+            return jsonify({"error": "Invalid credentials"}), 401
 
-        if auth.username != email or auth.password != password:
-            return "invalid credentials", 401
-        else:
-            return createJWT(auth.username, os.environ.get("JWT_SECRET"), True)
-    else:
-        return "invalid credentials", 401
+        email, password = cur.fetchone()
+
+        if auth.password != password:
+            return jsonify({"error": "Invalid credentials"}), 401
+
+        token = create_jwt(auth.username, JWT_SECRET, True)
+        return jsonify({"token": token})
+
+    except Exception as e:
+        return jsonify({"error": f"Internal server error: {str(e)}"}), 500
 
 
 @server.route("/validate", methods=["POST"])
 def validate():
-    encoded_jwt = request.headers["Authorization"]
+    auth_header = request.headers.get("Authorization", "")
 
-    if not encoded_jwt:
-        return "missing credentials", 401
+    if not auth_header.startswith("Bearer "):
+        return jsonify({"error": "Missing or invalid token"}), 401
 
-    encoded_jwt = encoded_jwt.split(" ")[1]
+    token = auth_header.split(" ")[1]
 
     try:
-        decoded = jwt.decode(
-            encoded_jwt, os.getenv("JWT_SECRET"), algorithms=["HS256"]
-        )
-    except:
-        return "not authorized", 403
+        decoded = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        return jsonify(decoded), 200
+    except jwt.ExpiredSignatureError:
+        return jsonify({"error": "Token has expired"}), 403
+    except jwt.InvalidTokenError:
+        return jsonify({"error": "Not authorized"}), 403
 
-    return decoded, 200
 
-
-def createJWT(username, secret, authz):
+def create_jwt(username, secret, authz):
     return jwt.encode(
         {
             "username": username,
-            "exp": datetime.datetime.now(tz=datetime.timezone.utc)
-            + datetime.timedelta(days=1),
+            "exp": datetime.datetime.utcnow() + datetime.timedelta(days=1),
             "iat": datetime.datetime.utcnow(),
             "admin": authz,
         },
         secret,
-        algorithm="HS256",
+        algorithm="HS256"
     )
 
 
 if __name__ == "__main__":
-    server.run(host="0.0.0.0", port=5000, debug=True)
+    server.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)), debug=False)

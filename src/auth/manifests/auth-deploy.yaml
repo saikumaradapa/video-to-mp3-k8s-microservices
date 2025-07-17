@@ -4,6 +4,7 @@ metadata:
   name: auth
   labels:
     app: auth
+    app.kubernetes.io/name: auth
 spec:
   replicas: 2
   selector:
@@ -12,15 +13,18 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 3
+      maxSurge: 1
+      maxUnavailable: 1
   template:
     metadata:
       labels:
         app: auth
+        app.kubernetes.io/name: auth
     spec:
       containers:
         - name: auth
-          image: saikumar134888/auth:python3.10-v1
+          image: saikumar134888/auth:python3.10-v2
+          imagePullPolicy: Always
           ports:
             - containerPort: 5000
           envFrom:

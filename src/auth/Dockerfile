@@ -1,32 +1,40 @@
 # Use a slim Python 3.10 image as the base
 FROM python:3.10-slim-bullseye
 
-# Update package list, install required system libraries, and upgrade pip
-RUN apt-get update \
-  # Install essential packages, without optional/suggested extras
-  && apt-get install -y --no-install-recommends --no-install-suggests \
-  # build-essential: provides tools like gcc, make (used to build Python C extensions)
-  # default-libmysqlclient-dev: development files needed to compile MySQL-Python bindings
-  # pkg-config: helps compilers find installed libraries when building extensions
-  build-essential default-libmysqlclient-dev pkg-config \
-  # Upgrade pip with no cache (saves space inside the image)
-  && pip install --no-cache-dir --upgrade pip
+# Environment settings
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    FLASK_ENV=production
 
+# Update packages and install only required system libraries
+RUN apt-get update && \
+    # Tools like gcc/make (needed for compiling extensions)
+    apt-get install -y --no-install-recommends --no-install-suggests build-essential && \
+    # MySQL client libraries for Python bindings
+    apt-get install -y default-libmysqlclient-dev && \
+    # Helps compilers locate libraries
+    apt-get install -y pkg-config && \
+    # Upgrade pip to latest version
+    pip install --no-cache-dir --upgrade pip && \
+    # Clean up apt cache to reduce image size
+    apt-get clean && \
+    # Remove package lists to reduce image size
+    rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
 
-# Copy dependency file first for layer caching
+# Copy dependency file first for better layer caching
 COPY requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
+# Copy all app files
 COPY . .
 
-# Expose Flask port
+# Expose the port configured via .env (fallback 5000)
 EXPOSE 5000
 
-# Run the Flask application
+# Run the Flask app
 CMD ["python3", "server.py"]
