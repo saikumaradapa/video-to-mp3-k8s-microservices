@@ -20,14 +20,14 @@ server.config["MYSQL_PORT"] = int(os.getenv("MYSQL_PORT", 3306))
 mysql = MySQL(server)
 
 # JWT Secret
-JWT_SECRET = os.getenv("JWT_SECRET", "your_jwt_secret")
+JWT_SECRET = os.getenv("JWT_SECRET", "secret")
 
 
 @server.route("/login", methods=["POST"])
 def login():
     auth = request.authorization
     if not auth or not auth.username or not auth.password:
-        return jsonify({"error": "Missing credentials"}), 401
+        return jsonify({"error": "Missing credentials in the request"}), 401
 
     try:
         cur = mysql.connection.cursor()
@@ -36,7 +36,7 @@ def login():
         )
 
         if res == 0:
-            return jsonify({"error": "Invalid credentials"}), 401
+            return jsonify({"error": "Credentials not found"}), 404
 
         email, password = cur.fetchone()
 

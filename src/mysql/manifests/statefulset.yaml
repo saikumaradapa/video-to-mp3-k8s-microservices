@@ -16,18 +16,19 @@ spec:
       containers:
         - name: mysql
           image: mysql:8.0
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3306
           env:
             - name: MYSQL_DATABASE
               valueFrom:
                 configMapKeyRef:
-                  name: mysql-config
+                  name: mysql-configmap
                   key: MYSQL_DATABASE
             - name: MYSQL_USER
               valueFrom:
                 configMapKeyRef:
-                  name: mysql-config
+                  name: mysql-configmap
                   key: MYSQL_USER
             - name: MYSQL_PASSWORD
               valueFrom:

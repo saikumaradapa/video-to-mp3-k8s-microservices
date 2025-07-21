@@ -1,9 +1,43 @@
+# Python cache and compiled files
 __pycache__/
 *.pyc
-.env
+*.pyo
+*.pyd
+
+# Virtual environments
 .venv/
-.git
-.gitignore
+venv/
+env/
+converter-venv/
+
+# Environment and secret files
+.env
+*.env
+
+# Local databases and logs
 *.db
 *.log
+
+# Git and Docker files
+.git/
+.gitignore
 .dockerignore
+
+# Editor/IDE-specific files
+.vscode/
+.idea/
+*.swp
+
+# Temporary media files and video/audio outputs
+*.mp3
+#*.mp4
+*.avi
+*.mkv
+*.mov
+*.wav
+*.tmp
+*.webm
+
+# OS/desktop-specific files
+.DS_Store
+Thumbs.db

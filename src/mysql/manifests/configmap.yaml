@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: mysql-config
+  name: mysql-configmap
 data:
   MYSQL_DATABASE: auth
-  MYSQL_USER: root
+  MYSQL_USER: auth_user
   MYSQL_PORT: "3306"

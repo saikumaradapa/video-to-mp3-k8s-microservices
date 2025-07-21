@@ -1,30 +1,32 @@
 # Use a slim Python 3.10 image as the base
 FROM python:3.10-slim-bullseye
 
-# Update package list, install required system libraries, and upgrade pip
-RUN apt-get update \
-  # Install essential packages, without optional/suggested extras
-  && apt-get install -y --no-install-recommends --no-install-suggests \
-  # build-essential: provides tools like gcc, make (used to build Python C extensions)
-  build-essential \
-  # ffmpeg: used for processing multimedia files (audio/video), required for MP4 to MP3 conversion
-  ffmpeg \
-  # Upgrade pip with no cache (saves space inside the image)
-  && pip install --no-cache-dir --upgrade pip
+# Environment settings
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
+# Install system dependencies
+RUN apt-get update && \
+    # Install compiler tools for Python packages with native extensions
+    apt-get install -y --no-install-recommends --no-install-suggests \
+        build-essential \
+        ffmpeg && \
+    # Upgrade pip
+    pip install --no-cache-dir --upgrade pip && \
+    # Clean up cache and lists to reduce image size
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
 
-# Copy dependency file first for layer caching
+# Copy and install dependencies first (layer caching)
 COPY requirements.txt .
 
-# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY . .
 
-
-# Run the Flask application
+# Default command to run the consumer
 CMD ["python3", "consumer.py"]
