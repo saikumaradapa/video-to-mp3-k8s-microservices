@@ -1,19 +1,16 @@
-import os, requests
-from urllib import response
-
+import os
+import requests
 
 def login(request):
     auth = request.authorization
     if not auth:
         return None, ("missing credentials", 401)
 
-    basicAuth = (auth.username, auth.password)
     response = requests.post(
         f"http://{os.getenv('AUTH_SVC_ADDRESS')}/login",
-        auth = basicAuth
+        auth=(auth.username, auth.password)
     )
 
     if response.status_code == 200:
-        return response.txt, None
-    else:
-        return None, (response.text, response.status_code)
+        return response.text, None
+    return None, (response.text, response.status_code)

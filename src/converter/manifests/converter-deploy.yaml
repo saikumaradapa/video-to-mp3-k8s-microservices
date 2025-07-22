@@ -5,7 +5,7 @@ metadata:
   labels:
     app: converter
 spec:
-  replicas: 4
+  replicas: 1
   selector:
     matchLabels:
       app: converter
@@ -13,6 +13,7 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 8
+      maxUnavailable: 25%
   template:
     metadata:
       labels:
@@ -20,9 +21,17 @@ spec:
     spec:
       containers:
         - name: converter
-          image: saikumar134888/converter:python3.10-v1
+          image: saikumar134888/converter:python3.10-v2
+          imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
                 name: converter-configmap
             - secretRef:
                 name: converter-secret
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"

@@ -3,4 +3,22 @@ kind: ConfigMap
 metadata:
   name: gateway-configmap
 data:
+  # MongoDB connection
+  MONGO_URI: "mongodb://auth123:auth123@mongodb:27017"
+
+  # Databases used (only 'videos' is used in gateway)
+  VIDEOS_DB: "videos"
+  MP3_DB: "mp3"
+
+  # Auth service address
   AUTH_SVC_ADDRESS: "auth:5000"
+
+  # RabbitMQ config
+  RABBITMQ_HOST: "rabbitmq"
+  VIDEO_QUEUE: "video"
+  MP3_QUEUE: "mp3"
+
+  # Flask app config
+  PORT: "8080"
+  DEBUG: "False"
+

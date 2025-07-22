@@ -1,9 +1,30 @@
+# Python cache and compiled files
 __pycache__/
 *.pyc
-.env
+*.pyo
+*.pyd
+
+# Virtual environments
 .venv/
-.git
-.gitignore
+venv/
+env/
+gateway-venv/
+gt-venv/
+
+# Environment and secret files
+.env
+*.env
+
+# Local databases and logs
 *.db
 *.log
+
+# Git and Docker files
+.git/
+.gitignore
 .dockerignore
+
+# Editor/IDE-specific files
+.vscode/
+.idea/
+*.swp

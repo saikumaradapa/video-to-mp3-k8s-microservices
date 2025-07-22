@@ -3,5 +3,15 @@ kind: ConfigMap
 metadata:
   name: converter-configmap
 data:
-  MP3_QUEUE: "mp3"
+  # MongoDB configuration
+  MONGO_HOST: "mongodb"
+  MONGO_PORT: "27017"
+  MONGO_USER: "auth123"
+  MONGO_PASSWORD: "auth123"
+  VIDEOS_DB: "videos"
+  MP3_DB: "mp3"
+
+  # RabbitMQ queues
+  RABBITMQ_HOST: "rabbitmq"
   VIDEO_QUEUE: "video"
+  MP3_QUEUE: "mp3"
