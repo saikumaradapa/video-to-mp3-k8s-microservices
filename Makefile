@@ -1,4 +1,4 @@
-SERVICES = mysql mongodb rabbitmq auth converter gateway
+SERVICES = rabbitmq mysql mongodb mailhog auth converter gateway
 MANIFEST_BASE = ./src
 
 .PHONY: apply delete apply-% delete-%
