@@ -22,7 +22,7 @@ spec:
       containers:
         - name: converter
           image: saikumar134888/converter:python3.10-v2
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: converter-configmap

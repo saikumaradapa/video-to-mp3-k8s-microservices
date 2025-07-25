@@ -24,7 +24,7 @@ spec:
       containers:
         - name: auth
           image: saikumar134888/auth:python3.10-v2
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 5000
           envFrom:
