@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: video-to-mp3-quota
+  namespace: video-to-mp3
+spec:
+  hard:
+    requests.cpu: "2"
+    requests.memory: 2Gi
+    limits.cpu: "4"
+    limits.memory: 4Gi
+    pods: "10"
+    persistentvolumeclaims: "5"
+
+#This restricts the total usage across the namespace to avoid runaway consumption.
