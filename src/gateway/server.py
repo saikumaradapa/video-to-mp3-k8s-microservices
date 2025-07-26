@@ -42,9 +42,12 @@ try:
     params = pika.ConnectionParameters(
         host=os.getenv("RABBITMQ_HOST", "rabbitmq"),
         port=5672,
-        heartbeat=120,
-        blocked_connection_timeout=300,
+        heartbeat=60,  # slightly more responsive
+        blocked_connection_timeout=120,  # tighter timeout
+        connection_attempts=5,  # retries on failure
+        retry_delay=3,  # wait between retries
     )
+
     connection = pika.BlockingConnection(params)
     channel = connection.channel()
 

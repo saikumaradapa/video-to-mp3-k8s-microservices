@@ -22,6 +22,8 @@ spec:
         - name: gateway
           image: saikumar134888/gateway:python3.10-v2
           imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
           envFrom:
             - configMapRef:
                 name: gateway-configmap
