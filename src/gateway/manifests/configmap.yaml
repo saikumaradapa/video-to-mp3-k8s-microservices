@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: gateway-configmap
+  namespace: video-to-mp3
 data:
   # MongoDB connection
   MONGO_URI: "mongodb://auth123:auth123@mongodb:27017"

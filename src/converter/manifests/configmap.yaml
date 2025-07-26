@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: converter-configmap
+  namespace: video-to-mp3
 data:
   # MongoDB configuration
   MONGO_HOST: "mongodb"

@@ -2,6 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: rabbitmq-pvc
+  namespace: video-to-mp3
 spec:
   accessModes:
     - ReadWriteOnce

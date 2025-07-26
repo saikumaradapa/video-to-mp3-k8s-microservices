@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: auth
+  namespace: video-to-mp3
   labels:
     app: auth
     app.kubernetes.io/name: auth

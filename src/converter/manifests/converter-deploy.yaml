@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: converter
+  namespace: video-to-mp3
   labels:
     app: converter
 spec:
