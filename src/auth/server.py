@@ -22,6 +22,9 @@ mysql = MySQL(server)
 # JWT Secret
 JWT_SECRET = os.getenv("JWT_SECRET", "secret")
 
+@server.route("/healthz", methods=["GET"])
+def health_check():
+    return "OK", 200
 
 @server.route("/login", methods=["POST"])
 def login():

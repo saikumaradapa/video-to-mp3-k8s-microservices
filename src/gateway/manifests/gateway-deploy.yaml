@@ -30,3 +30,20 @@ spec:
                 name: gateway-configmap
             - secretRef:
                 name: gateway-secret
+
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+      securityContext:
+        runAsNonRoot: true

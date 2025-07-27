@@ -58,6 +58,10 @@ except Exception as e:
     logging.error(f"RabbitMQ connection failed: {e}")
     raise SystemExit("RabbitMQ connection failed.")
 
+@server.route("/healthz", methods=["GET"])
+def health_check():
+    return "OK", 200
+
 
 @server.route("/login", methods=["POST"])
 def login():

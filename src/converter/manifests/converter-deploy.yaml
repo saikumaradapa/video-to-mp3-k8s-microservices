@@ -36,3 +36,18 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
+
+          livenessProbe:
+            exec:
+              command: ["pgrep", "python"]
+            initialDelaySeconds: 10
+            periodSeconds: 30
+
+          readinessProbe:
+            exec:
+              command: ["pgrep", "python"]
+            initialDelaySeconds: 5
+            periodSeconds: 15
+
+      securityContext:
+        runAsNonRoot: true

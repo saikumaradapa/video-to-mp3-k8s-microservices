@@ -32,6 +32,27 @@ spec:
           volumeMounts:
             - name: mongodb-data
               mountPath: /data/db
+
+          # Health checks using TCP socket probe
+          readinessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+          livenessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
+
+      securityContext:
+        runAsNonRoot: true
+
   volumeClaimTemplates:
     - metadata:
         name: mongodb-data

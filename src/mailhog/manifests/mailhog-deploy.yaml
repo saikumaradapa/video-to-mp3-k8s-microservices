@@ -22,3 +22,26 @@ spec:
           ports:
             - containerPort: 1025  # SMTP
             - containerPort: 8025  # Web UI
+
+          # Readiness probe: check if HTTP UI is up
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8025
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+          # Liveness probe: check if HTTP UI is still running
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8025
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
+
+      securityContext:
+        runAsNonRoot: true
