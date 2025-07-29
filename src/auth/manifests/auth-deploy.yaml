@@ -33,19 +33,3 @@ spec:
                 name: auth-configmap
             - secretRef:
                 name: auth-secret
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: 5000
-            initialDelaySeconds: 10
-            periodSeconds: 10
-
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: 5000
-            initialDelaySeconds: 5
-            periodSeconds: 5
-
-      securityContext:
-        runAsNonRoot: true
