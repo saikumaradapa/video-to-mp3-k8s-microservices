@@ -34,26 +34,6 @@ spec:
             - mountPath: "/var/lib/rabbitmq"
               name: rabbitmq-volume
 
-          # Health Checks (No Auth Required)
-          readinessProbe:
-            tcpSocket:
-              port: 5672
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3
-
-          livenessProbe:
-            tcpSocket:
-              port: 5672
-            initialDelaySeconds: 20
-            periodSeconds: 20
-            timeoutSeconds: 5
-            failureThreshold: 5
-
-      securityContext:
-        runAsNonRoot: true
-
       volumes:
         - name: rabbitmq-volume
           persistentVolumeClaim:
