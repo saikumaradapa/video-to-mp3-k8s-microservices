@@ -3,6 +3,8 @@ import json
 import logging
 import gridfs
 import pika
+import threading
+import time
 from flask import Flask, request, send_file
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
@@ -54,9 +56,22 @@ try:
     channel.queue_declare(queue=os.getenv("VIDEO_QUEUE", "video"), durable=True)
     channel.queue_declare(queue=os.getenv("MP3_QUEUE", "mp3"), durable=True)
 
+    # Background thread to keep connection alive
+    def keep_alive(conn):
+        while True:
+            try:
+                conn.process_data_events()
+            except Exception as e:
+                logging.error(f"RabbitMQ heartbeat failed: {e}")
+                break
+            time.sleep(30)  # send heartbeat every 30 seconds
+
+    threading.Thread(target=keep_alive, args=(connection,), daemon=True).start()
+
 except Exception as e:
     logging.error(f"RabbitMQ connection failed: {e}")
     raise SystemExit("RabbitMQ connection failed.")
+
 
 @server.route("/healthz", methods=["GET"])
 def health_check():
