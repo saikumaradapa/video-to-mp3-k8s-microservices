@@ -5,11 +5,11 @@ metadata:
   namespace: video-to-mp3
 spec:
   hard:
-    requests.cpu: "2"
-    requests.memory: 2Gi
-    limits.cpu: "4"
-    limits.memory: 4Gi
-    pods: "10"
-    persistentvolumeclaims: "5"
+    requests.cpu: "4"
+    requests.memory: 4Gi
+    limits.cpu: "8"
+    limits.memory: 8Gi
+    pods: "20"
+    persistentvolumeclaims: "7"
 
 #This restricts the total usage across the namespace to avoid runaway consumption.
